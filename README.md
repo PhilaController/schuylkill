@@ -22,6 +22,8 @@ pip install schuylkill
 
 ## Examples
 
+### Exact Matching
+
 You can merge data based on string functions: "exact", "startswith", "contains":
 
 ```python
@@ -62,3 +64,20 @@ You can also use the `pandas` `pipe()` function to chain multiple merges togethe
 
 In the above example, each merge performed matches one row, and the final merged data frame has
 three matches.
+
+### Fuzzy Matching
+
+Fuzzy matching based on a score threshold is also available:
+
+```python
+# Create the data
+>>> left = pd.DataFrame({"street": ["Washington", "Market", "Broad"], "x": [1, 2, 3]})
+>>> right = pd.DataFrame({"street": ["Washington", "Mrkt", "Brd"], "y": [4, 5, 6]})
+
+# Perform a fuzzy merge
+>>> merged = skool.fuzzy_merge(left, right, on="street", score_cutoff=70)
+     street_x  x  match_probability  right_index    street_y    y
+0  Washington  1               1.00          0.0  Washington  4.0
+1      Market  2               0.80          1.0        Mrkt  5.0
+2       Broad  3               0.75          2.0         Brd  6.0
+```
