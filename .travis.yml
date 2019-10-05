@@ -17,7 +17,7 @@ before_install:
   - export PATH=$HOME/miniconda/bin:$PATH
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION
-  - conda install --yes --file requirements.txt
+  - conda install --yes -c conda-forge --file requirements.txt
   - conda info
   - pip install .[dev]
 script:
