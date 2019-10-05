@@ -1,0 +1,36 @@
+dist: xenial
+language: python
+python:
+  - 3.6
+  - 3.7
+notifications:
+  email:
+    - nick.hand@phila.gov
+cache:
+  directories:
+    - "$HOME/.cache/pip"
+    - "$HOME/.conda"
+before_install:
+  - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - "./miniconda.sh -b -p $HOME/miniconda"
+  - export PATH=$HOME/miniconda/bin:$PATH
+install:
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION
+  - conda install --yes --file requirements.txt
+  - conda info
+  - pip install .[dev]
+script:
+  - py.test . --cov schuylkill
+after_success:
+  - coveralls
+deploy:
+  provider: pypi
+  distributions: sdist
+  user: "__token__"
+  password:
+    secure: oP/wSRZkYzU7XFX3G9j38hH2bWFergsh3Qb6KPgabrUNTACs7k4B3FX9/nreooPl49dkhUpFocF75biR8gl/HGrWNq09Fw7Eu0WyP7oXJiBQwrbNJ7E7anaGsaSiw5XTCSENKLS6nLubxpJp5OtJ4k9fAq9lJDe/ZsSqg7SdvM7pQ0v0D+nxfXbmoBV6sDJBS4bMN7xDopjvJzv5b6KBXzmGOkd8OrGGKgrgBczPDVI2ZD4B41f/ntSC5O8/z9z9xinJnXkqkn4dpczqsmgWWV6YxhV5yprQSyV0rs5odLs6dgF8vPQsghg9paNYze5jcRHbtlr55jrv2nCZOkXeKwfv9uSCtlm2aXix0a6uM0a1vbEcIHvGKmK+IRoNR+8F79i0OBLMgSbyk2X4Ck+t7mEoXhyIYkflAHtCwVz8W4bT2PYWAzbH/SqBhgd1d0Hb96XZCr92g18ZwRvemwYeaeMYtii43JXb9dqkCpewFOQBCs1a/dFuHr+MmNNCjrb/O6fB0zlJsSzb+yMa7ukJFfjUMCoPoOcLgFd/0MCUqmdYRbLhC6mIGckFLJ10lEIlIozFCZMfIIFQGJrdwz2Vdj+vvLQQwHqiTAB+ACebkhI2vwiswoH5rTXAM3fkAg17dRyIvisab5L17pacx3mD/qdSFeUJ/aoGJj2TjLZJ32M=
+  skip_existing: true
+  on:
+    tags: true
+    condition: $TRAVIS_PYTHON_VERSION = "3.7"
