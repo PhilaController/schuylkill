@@ -2,6 +2,7 @@ from functools import wraps
 import inspect
 import string
 import pandas as pd
+import warnings
 
 
 def clean_strings(df, cols, remove_punctuation=True, ignored=[]):
@@ -52,6 +53,23 @@ def clean_strings(df, cols, remove_punctuation=True, ignored=[]):
     return out
 
 
+def check_calling_signature(f, args, kwargs):
+
+    # Enforce calling signature
+    sig = inspect.signature(f)
+    bound_args = sig.bind(*args, **kwargs)
+
+    # Enforce types
+    types = f.__annotations__
+    for param in bound_args.arguments:
+        value = bound_args.arguments[param]
+        if param in types:
+            if not isinstance(value, types[param]):
+                raise TypeError(
+                    f"Wrong type for parameter {param}, expected {types[param]}, got {type(value)}"
+                )
+
+
 def pipeable(f):
     """
     Make a function able to chained together to accomodate multiple
@@ -66,12 +84,12 @@ def pipeable(f):
         # First, see if supplied args/kwargs matches docstring
         process_merged = False
         try:
-            bound_args = inspect.signature(f).bind(*args, **kwargs)
+            check_calling_signature(f, args, kwargs)
         except:
             process_merged = True
             try:
                 # ignore first argument
-                bound_args = inspect.signature(f).bind(*args[1:], **kwargs)
+                check_calling_signature(f, args[1:], kwargs)
             except:
                 raise ValueError("Incompatible arguments for merge. See docstring.")
 
@@ -89,10 +107,18 @@ def pipeable(f):
             # drop the matches from the left dataframe
             left = left.loc[left.index.difference(matched.index)]
 
-            # find the new matches
-            new_matches = f(left, *args[2:], **kwargs)
+            # find the new matches (if we have any left to match)
+            if len(left):
+                new_matches = f(left, *args[2:], **kwargs)
+                toret = pd.concat(
+                    [matched, new_matches], axis=0, sort=False
+                ).sort_index()
+            else:
+                warnings.warn(
+                    "All rows in 'left' have a match, skipping additional merge function call"
+                )
+                toret = merged
 
-            # return the subset
-            return pd.concat([matched, new_matches], axis=0).sort_index()
+            return toret
 
     return wrapper
