@@ -4,12 +4,12 @@ from .utils import pipeable
 
 @pipeable
 def exact_merge(
-    left,
-    right,
-    on=None,
-    left_on=None,
-    right_on=None,
-    how="exact",
+    left: pd.DataFrame,
+    right: pd.DataFrame,
+    on: str = None,
+    left_on: str = None,
+    right_on: str = None,
+    how: str = "exact",
     suffixes=("_x", "_y"),
 ):
     """
@@ -64,7 +64,9 @@ def exact_merge(
         raise ValueError(f"'{right_on}' is not a column in `right`")
 
     def contains(row, right):
-        return right.loc[right[right_on].str.contains(row[left_on], na=False)]
+        return right.loc[
+            right[right_on].str.contains(row[left_on], na=False, regex=False)
+        ]
 
     def exact(row, right):
         return right.loc[right[right_on] == row[left_on]]

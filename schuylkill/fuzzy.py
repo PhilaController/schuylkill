@@ -37,13 +37,13 @@ def _find_matches(x, right_data, score_cutoff, scorer=fuzz.ratio, limit=10):
 
 @pipeable
 def fuzzy_merge(
-    left,
-    right,
-    on=None,
-    left_on=None,
-    right_on=None,
-    workers=4,
-    score_cutoff=90,
+    left: pd.DataFrame,
+    right: pd.DataFrame,
+    on: str = None,
+    left_on: str = None,
+    right_on: str = None,
+    workers: int = 4,
+    score_cutoff: int = 90,
     scorer=fuzz.ratio,
     max_matches=1,
     suffixes=("_x", "_y"),
