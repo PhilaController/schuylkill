@@ -39,7 +39,6 @@ def _format_matches(sparse_matrix, name_vector_unique, unique_index, left_size):
         # similarity
         similarity = sparse_matrix.data[index]
 
-        # FIXME
         if lidx != ridx and lidx < left_size and ridx > left_size:
             out.append([left_index, right_index, left_side, right_side, similarity])
 
@@ -164,17 +163,14 @@ def tf_idf_merge(
 
     # Merge together into single Series
     all_data = pd.concat([left_data, right_data], axis=0)
-    all_data_unique = pd.concat(
-        [left_data.drop_duplicates(), right_data.drop_duplicates()], axis=0
-    )
 
     # save the index and then reset it
-    unique_index = all_data_unique.index
-    all_data_unique = all_data_unique.reset_index(drop=True)
+    all_data_index = all_data.index
+    all_data = all_data.reset_index(drop=True)
 
     # Do the TF-IDF vectorization
     vectorizer = TfidfVectorizer(min_df=1, analyzer=_ngrams)
-    tf_idf_matrix = vectorizer.fit_transform(all_data_unique.values)
+    tf_idf_matrix = vectorizer.fit_transform(all_data.values)
 
     # Get the matches as a sparse matrix
     matches = _fast_cossim_top(
@@ -186,7 +182,7 @@ def tf_idf_merge(
 
     # Format the matches into a DataFrame
     left_size = len(left_data)
-    matches_df = _format_matches(matches, all_data_unique, unique_index, left_size)
+    matches_df = _format_matches(matches, all_data, all_data_index, left_size)
 
     # Merge in the right
     matches_df = (
