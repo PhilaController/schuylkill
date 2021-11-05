@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "schuylkill"
-version = "0.1.0"
+version = "0.1.1"
 description = "Fixing human errors by matching those hard-to-spell words"
 authors = ["Nick Hand <nick.hand@phila.gov>"]
 license = "MIT"
