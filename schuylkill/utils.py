@@ -1,8 +1,15 @@
-from functools import wraps
 import inspect
 import string
-import pandas as pd
 import warnings
+from functools import wraps
+
+import pandas as pd
+
+
+def _remove_punctuation(s):
+    """Remove punctuation from the input string."""
+    translator = str.maketrans("", "", string.punctuation)
+    return s.translate(translator)
 
 
 def clean_strings(df, cols, remove_punctuation=True, ignored=[]):
@@ -12,14 +19,14 @@ def clean_strings(df, cols, remove_punctuation=True, ignored=[]):
     Parameters
     ----------
     df : DataFrame
-        the input data 
+        the input data
     cols : list of str
         the list of column names to clean; these should all be string types
     remove_punctuation : bool, optional
         whether or not to remove punctuation from the strings
     ignored : list of str, optional
         a list of any words to remove from the strings
-    
+
     Returns
     -------
     df : pandas.DataFrame
@@ -43,7 +50,7 @@ def clean_strings(df, cols, remove_punctuation=True, ignored=[]):
 
         # Remove punctuation
         if remove_punctuation:
-            X = X.str.replace(f"[{string.punctuation}]", " ")
+            X = X.apply(_remove_punctuation)
 
         # Remove ignored words
         out[col] = X.apply(

@@ -1,5 +1,0 @@
-pandas
-numpy
-fuzzywuzzy[speedup]
-scikit-learn
-sparse_dot_topn

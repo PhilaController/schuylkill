@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/PhiladelphiaController/schuylkill.svg?branch=master)](https://travis-ci.org/PhiladelphiaController/schuylkill)
 [![Coverage Status](https://coveralls.io/repos/github/PhiladelphiaController/schuylkill/badge.svg?branch=master)](https://coveralls.io/github/PhiladelphiaController/schuylkill?branch=master)
-[![](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/download/releases/3.6.0/)
+[![](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/download/releases/3.7.0/)
 ![t](https://img.shields.io/badge/status-stable-green.svg)
 [![](https://img.shields.io/github/license/PhiladelphiaController/schuylkill.svg)](https://github.com/PhiladelphiaController/schuylkill/blob/master/LICENSE)
 [![PyPi version](https://img.shields.io/pypi/v/schuylkill.svg)](https://pypi.python.org/pypi/schuylkill/)

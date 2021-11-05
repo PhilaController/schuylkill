@@ -1,8 +1,9 @@
-from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
 import multiprocessing
+
 import numpy as np
 import pandas as pd
+from fuzzywuzzy import fuzz, process
+
 from .utils import pipeable
 
 
@@ -13,7 +14,7 @@ def _apply_df(args):
 
 def _apply_by_multiprocessing(df, func, workers=4, **kwargs):
     """
-    Internal function to apply a function to a dataframe using 
+    Internal function to apply a function to a dataframe using
     multiprocessing.
     """
     # map the function in parallel
@@ -53,7 +54,7 @@ def fuzzy_merge(
 
     Notes
     -----
-    -   This performs a "left" merge — all rows in the left data frame will be 
+    -   This performs a "left" merge — all rows in the left data frame will be
         present in the returned data frame
     -   Data in the left data frame can match multiple values in the right column.
 
@@ -85,7 +86,7 @@ def fuzzy_merge(
     Returns
     -------
     merged : pandas.DataFrame
-        the merged dataframe containg all rows in `left` and any matched data 
+        the merged dataframe containg all rows in `left` and any matched data
         from the `right` data frame
     """
     if on is not None:
@@ -121,7 +122,7 @@ def fuzzy_merge(
 
     # unstack the matches
     unstacked = (
-        fuzzy_matches.apply(lambda x: pd.Series(x[left_data.name]), axis=1)
+        fuzzy_matches.apply(lambda x: pd.Series(x[left_data.name], dtype=str), axis=1)
         .stack()
         .reset_index(level=1, drop=True)
     )
