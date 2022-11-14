@@ -100,6 +100,10 @@ def fuzzy_merge(
     if right_on not in right.columns:
         raise ValueError(f"'{right_on}' is not a column in `right`")
 
+    # Make sure no duplicates in left index
+    if left.index.duplicated().sum():
+        raise ValueError("`left` dataframe has duplicate indices")
+
     # get the left and right strings
     left_data = left[left_on].dropna().astype(str)
     right_data = right[right_on].dropna().astype(str).rename_axis("right_index")
@@ -122,7 +126,7 @@ def fuzzy_merge(
 
     # unstack the matches
     unstacked = (
-        fuzzy_matches.apply(lambda x: pd.Series(x[left_data.name], dtype=str), axis=1)
+        fuzzy_matches.apply(lambda x: pd.Series(x[left_data.name], dtype=object), axis=1)
         .stack()
         .reset_index(level=1, drop=True)
     )
